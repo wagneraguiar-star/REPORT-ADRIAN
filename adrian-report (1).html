@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adrian · Report Diário</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --surface2: #1c1c1c;
+      --border: #2a2a2a;
+      --accent: #e8ff47;
+      --accent2: #ff6b35;
+      --text: #f0f0f0;
+      --muted: #666;
+      --success: #4ade80;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      padding: 0 0 60px;
+    }
+
+    /* Header */
+    .header {
+      position: relative;
+      padding: 40px 24px 32px;
+      overflow: hidden;
+    }
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 220px; height: 220px;
+      background: radial-gradient(circle, rgba(232,255,71,0.12) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: -20px; left: -40px;
+      width: 160px; height: 160px;
+      background: radial-gradient(circle, rgba(255,107,53,0.08) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .tag {
+      display: inline-block;
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid rgba(232,255,71,0.3);
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
+    .header h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+    .header h1 span {
+      color: var(--accent);
+    }
+    .date-display {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 300;
+    }
+
+    /* Form */
+    .form-body {
+      padding: 0 20px;
+    }
+
+    .section {
+      margin-bottom: 28px;
+      animation: fadeUp 0.5s ease both;
+    }
+    .section:nth-child(1) { animation-delay: 0.05s; }
+    .section:nth-child(2) { animation-delay: 0.1s; }
+    .section:nth-child(3) { animation-delay: 0.15s; }
+    .section:nth-child(4) { animation-delay: 0.2s; }
+    .section:nth-child(5) { animation-delay: 0.25s; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .field {
+      display: flex;
+      align-items: center;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      gap: 14px;
+      transition: background 0.15s;
+    }
+    .field:last-child { border-bottom: none; }
+    .field:focus-within { background: var(--surface2); }
+
+    .field-icon {
+      font-size: 18px;
+      width: 28px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .field-info {
+      flex: 1;
+    }
+    .field-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+    .field-hint {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .field input[type="number"],
+    .field input[type="text"],
+    .field input[type="date"],
+    .field textarea {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--accent);
+      font-family: 'Syne', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      width: 100px;
+      text-align: right;
+      -moz-appearance: textfield;
+    }
+    .field textarea {
+      font-size: 13px;
+      font-weight: 400;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      width: 100%;
+      resize: none;
+      height: 70px;
+      padding-top: 2px;
+      text-align: left;
+    }
+    .field input::-webkit-outer-spin-button,
+    .field input::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .field input::placeholder,
+    .field textarea::placeholder { color: var(--border); }
+
+    .field-wide {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .field-wide .field-top {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      margin-bottom: 8px;
+    }
+
+    /* Submit */
+    .submit-wrap {
+      padding: 0 20px;
+      margin-top: 8px;
+    }
+    .btn-submit {
+      width: 100%;
+      padding: 18px;
+      background: var(--accent);
+      color: #0a0a0a;
+      border: none;
+      border-radius: 14px;
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform 0.15s, opacity 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-submit:active { transform: scale(0.98); opacity: 0.9; }
+    .btn-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--success);
+      color: #000;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 12px 24px;
+      border-radius: 40px;
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 999;
+      white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    .error-toast {
+      background: #ff4d4d;
+      color: #fff;
+    }
+
+    /* Config hint */
+    .config-hint {
+      margin: 24px 20px 0;
+      background: rgba(232,255,71,0.05);
+      border: 1px solid rgba(232,255,71,0.15);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .config-hint strong { color: var(--accent); }
+    .config-hint a { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="tag">Instagram · Report Diário</div>
+  <h1>@Adrian<span>.</span></h1>
+  <div class="date-display" id="dateDisplay"></div>
+</div>
+
+<div class="form-body">
+
+  <!-- Data -->
+  <div class="section">
+    <div class="section-label">Data</div>
+    <div class="card">
+      <div class="field">
+        <div class="field-icon">📅</div>
+        <div class="field-info">
+          <div class="field-name">Data do report</div>
+        </div>
+        <input type="date" id="data" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Seguidores -->
+  <div class="section">
+    <div class="section-label">Crescimento</div>
+    <div class="card">
+      <div class="field">
+        <div class="field-icon">👥</div>
+        <div class="field-info">
+          <div class="field-name">Total de seguidores</div>
+          <div class="field-hint">número atual</div>
+        </div>
+        <input type="number" id="seguidores" placeholder="0" />
+      </div>
+      <div class="field">
+        <div class="field-icon">📈</div>
+        <div class="field-info">
+          <div class="field-name">Novos seguidores</div>
+          <div class="field-hint">ganhos hoje</div>
+        </div>
+        <input type="number" id="novosSeguidores" placeholder="0" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Engajamento -->
+  <div class="section">
+    <div class="section-label">Engajamento</div>
+    <div class="card">
+      <div class="field">
+        <div class="field-icon">❤️</div>
+        <div class="field-info">
+          <div class="field-name">Curtidas</div>
+          <div class="field-hint">total do dia</div>
+        </div>
+        <input type="number" id="curtidas" placeholder="0" />
+      </div>
+      <div class="field">
+        <div class="field-icon">💬</div>
+        <div class="field-info">
+          <div class="field-name">Comentários</div>
+          <div class="field-hint">total do dia</div>
+        </div>
+        <input type="number" id="comentarios" placeholder="0" />
+      </div>
+      <div class="field">
+        <div class="field-icon">🔖</div>
+        <div class="field-info">
+          <div class="field-name">Saves</div>
+          <div class="field-hint">total do dia</div>
+        </div>
+        <input type="number" id="saves" placeholder="0" />
+      </div>
+      <div class="field">
+        <div class="field-icon">↗️</div>
+        <div class="field-info">
+          <div class="field-name">Compartilhamentos</div>
+          <div class="field-hint">total do dia</div>
+        </div>
+        <input type="number" id="compartilhamentos" placeholder="0" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Alcance -->
+  <div class="section">
+    <div class="section-label">Alcance & Impressões</div>
+    <div class="card">
+      <div class="field">
+        <div class="field-icon">👁️</div>
+        <div class="field-info">
+          <div class="field-name">Alcance</div>
+          <div class="field-hint">contas únicas</div>
+        </div>
+        <input type="number" id="alcance" placeholder="0" />
+      </div>
+      <div class="field">
+        <div class="field-icon">📊</div>
+        <div class="field-info">
+          <div class="field-name">Impressões</div>
+          <div class="field-hint">total de visualizações</div>
+        </div>
+        <input type="number" id="impressoes" placeholder="0" />
+      </div>
+      <div class="field">
+        <div class="field-icon">👤</div>
+        <div class="field-info">
+          <div class="field-name">Visitas ao perfil</div>
+        </div>
+        <input type="number" id="visitasPerfil" placeholder="0" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Stories & Reels -->
+  <div class="section">
+    <div class="section-label">Stories & Reels</div>
+    <div class="card">
+      <div class="field">
+        <div class="field-icon">🎬</div>
+        <div class="field-info">
+          <div class="field-name">Views Reels</div>
+          <div class="field-hint">total do dia</div>
+        </div>
+        <input type="number" id="viewsReels" placeholder="0" />
+      </div>
+      <div class="field">
+        <div class="field-icon">📱</div>
+        <div class="field-info">
+          <div class="field-name">Views Stories</div>
+          <div class="field-hint">total do dia</div>
+        </div>
+        <input type="number" id="viewsStories" placeholder="0" />
+      </div>
+      <div class="field">
+        <div class="field-icon">🔗</div>
+        <div class="field-info">
+          <div class="field-name">Cliques no link</div>
+          <div class="field-hint">bio ou stories</div>
+        </div>
+        <input type="number" id="cliquesLink" placeholder="0" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Observações -->
+  <div class="section">
+    <div class="section-label">Observações</div>
+    <div class="card">
+      <div class="field field-wide">
+        <div class="field-top">
+          <div class="field-icon">📝</div>
+          <div class="field-info">
+            <div class="field-name">Notas do dia</div>
+            <div class="field-hint">posts publicados, campanhas, algo relevante</div>
+          </div>
+        </div>
+        <textarea id="observacoes" placeholder="Ex: Publicado Reel sobre rotina matinal, Stories de bastidores..."></textarea>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="submit-wrap">
+  <button class="btn-submit" id="btnEnviar" onclick="enviarReport()">
+    Enviar Report →
+  </button>
+</div>
+
+<div class="config-hint">
+  ⚙️ <strong>Para conectar ao Google Sheets:</strong> Cole a URL do seu Google Apps Script no campo <code>SCRIPT_URL</code> no código. <a href="#" onclick="alert('Instruções no arquivo README incluído.')">Ver instruções</a>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ⬇️ COLE AQUI A URL DO SEU GOOGLE APPS SCRIPT
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwxZJBbgs6g61VZOn63pILPNFEeBbDOIbyFOlSUoROA6ewcRoZIbomRw7KD-tzQkqWD/exec";
+
+  // Setar data de hoje automaticamente
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const dd = String(today.getDate()).padStart(2, '0');
+  document.getElementById('data').value = `${yyyy}-${mm}-${dd}`;
+
+  const dias = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+  const meses = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  document.getElementById('dateDisplay').textContent =
+    `${dias[today.getDay()]}, ${today.getDate()} de ${meses[today.getMonth()]} de ${today.getFullYear()}`;
+
+  function showToast(msg, isError = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast' + (isError ? ' error-toast' : '');
+    setTimeout(() => t.classList.add('show'), 10);
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+
+  async function enviarReport() {
+    const btn = document.getElementById('btnEnviar');
+
+    const dados = {
+      data:               document.getElementById('data').value,
+      seguidores:         document.getElementById('seguidores').value || '0',
+      novosSeguidores:    document.getElementById('novosSeguidores').value || '0',
+      curtidas:           document.getElementById('curtidas').value || '0',
+      comentarios:        document.getElementById('comentarios').value || '0',
+      saves:              document.getElementById('saves').value || '0',
+      compartilhamentos:  document.getElementById('compartilhamentos').value || '0',
+      alcance:            document.getElementById('alcance').value || '0',
+      impressoes:         document.getElementById('impressoes').value || '0',
+      visitasPerfil:      document.getElementById('visitasPerfil').value || '0',
+      viewsReels:         document.getElementById('viewsReels').value || '0',
+      viewsStories:       document.getElementById('viewsStories').value || '0',
+      cliquesLink:        document.getElementById('cliquesLink').value || '0',
+      observacoes:        document.getElementById('observacoes').value || '',
+    };
+
+    if (!dados.data) {
+      showToast('Preencha a data!', true);
+      return;
+    }
+
+    if (!SCRIPT_URL || SCRIPT_URL === "SUA_URL_AQUI") {
+      console.log('Dados do report:', dados);
+      showToast('⚠️ Configure a URL do Script!', true);
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dados),
+      });
+      showToast('✅ Report enviado pro Sheets!');
+      // Limpar campos numéricos após envio
+      ['seguidores','novosSeguidores','curtidas','comentarios','saves',
+       'compartilhamentos','alcance','impressoes','visitasPerfil',
+       'viewsReels','viewsStories','cliquesLink'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      document.getElementById('observacoes').value = '';
+    } catch (e) {
+      showToast('Erro ao enviar. Tente novamente.', true);
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Enviar Report →';
+  }
+</script>
+
+</body>
+</html>
